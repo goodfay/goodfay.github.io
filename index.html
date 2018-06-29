@@ -260,6 +260,217 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/29/【HTTP】HTTPS 原理详解 /">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kinchen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="kinchen">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/29/【HTTP】HTTPS 原理详解 /" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-29T18:22:29+08:00">
+                2018-06-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>#【HTTP】HTTPS 原理详解</p>
+<hr>
+<h2 id="title-HTTPS-原理详解"><a href="#title-HTTPS-原理详解" class="headerlink" title="title: HTTPS 原理详解"></a>title: HTTPS 原理详解</h2><p>HTTPS（全称：HyperText Transfer Protocol over Secure Socket Layer），其实 HTTPS 并不是一个新鲜协议，Google 很早就开始启用了，初衷是为了保证数据安全。 近两年，Google、Baidu、Facebook 等这样的互联网巨头，不谋而合地开始大力推行 HTTPS， 国内外的大型互联网公司很多也都已经启用了全站 HTTPS，这也是未来互联网发展的趋势。</p>
+<p>为鼓励全球网站的 HTTPS 实现，一些互联网公司都提出了自己的要求：</p>
+<p>1）Google 已调整搜索引擎算法，让采用 HTTPS 的网站在搜索中排名更靠前；</p>
+<p>2）从 2017 年开始，Chrome 浏览器已把采用 HTTP 协议的网站标记为不安全网站；</p>
+<p>3）苹果要求 2017 年App Store 中的所有应用都必须使用 HTTPS 加密连接；</p>
+<p>4）当前国内炒的很火热的微信小程序也要求必须使用 HTTPS 协议；</p>
+<p>5）新一代的 HTTP/2 协议的支持需以 HTTPS 为基础。</p>
+<p>等等，因此想必在不久的将来，全网 HTTPS 势在必行。</p>
+<p>###概念</p>
+<p>协议</p>
+<p>####1、HTTP 协议（HyperText Transfer Protocol，超文本传输协议）：是客户端浏览器或其他程序与Web服务器之间的应用层通信协议 。</p>
+<p>####2、HTTPS 协议（HyperText Transfer Protocol over Secure Socket Layer）：可以理解为HTTP+SSL/TLS， 即 HTTP 下加入 SSL 层，HTTPS 的安全基础是 SSL，因此加密的详细内容就需要 SSL，用于安全的 HTTP 数据传输。</p>
+<p><img src="https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=4156134628,1154602463&amp;fm=173&amp;s=082B57308D22452A086440CA0300A0B3&amp;w=359&amp;h=173&amp;img.JPG" alt="此处输入图片的描述"></p>
+<p>如上图所示 HTTPS 相比 HTTP 多了一层 SSL/TLS</p>
+<p>SSL（Secure Socket Layer，安全套接字层）：1994年为 Netscape 所研发，SSL 协议位于 TCP/IP 协议与各种应用层协议之间，为数据通讯提供安全支持。</p>
+<p>TLS（Transport Layer Security，传输层安全）：其前身是 SSL，它最初的几个版本（SSL 1.0、SSL 2.0、SSL 3.0）由网景公司开发，1999年从 3.1 开始被 IETF 标准化并改名，发展至今已经有 TLS 1.0、TLS 1.1、TLS 1.2 三个版本。SSL3.0和TLS1.0由于存在安全漏洞，已经很少被使用到。TLS 1.3 改动会比较大，目前还在草案阶段，目前使用最广泛的是TLS 1.1、TLS 1.2。</p>
+<p>加密算法：</p>
+<p>据记载，公元前400年，古希腊人就发明了置换密码；在第二次世界大战期间，德国军方启用了“恩尼格玛”密码机，所以密码学在社会发展中有着广泛的用途。</p>
+<p>1、对称加密</p>
+<p>有流式、分组两种，加密和解密都是使用的同一个密钥。</p>
+<p>例如：DES、AES-GCM、ChaCha20-Poly1305等</p>
+<p>2、非对称加密</p>
+<p>加密使用的密钥和解密使用的密钥是不相同的，分别称为：公钥、私钥，公钥和算法都是公开的，私钥是保密的。非对称加密算法性能较低，但是安全性超强，由于其加密特性，非对称加密算法能加密的数据长度也是有限的。</p>
+<p>例如：RSA、DSA、ECDSA、 DH、ECDHE</p>
+<p>3、哈希算法</p>
+<p>将任意长度的信息转换为较短的固定长度的值，通常其长度要比信息小得多，且算法不可逆。</p>
+<p>例如：MD5、SHA-1、SHA-2、SHA-256 等</p>
+<p>4、数字签名</p>
+<p>签名就是在信息的后面再加上一段内容（信息经过hash后的值），可以证明信息没有被修改过。hash值一般都会加密后（也就是签名）再和信息一起发送，以保证这个hash值不被修改。</p>
+<p>详解</p>
+<p>一、HTTP访问过程</p>
+<p><img src="https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3551114739,3321435301&amp;fm=173&amp;s=84B8C5320D747C0B425C04DB030030F1&amp;w=331&amp;h=168&amp;img.JPG" alt="此处输入图片的描述"></p>
+<p>抓包如下：</p>
+<p><img src="https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=1609311071,3474246901&amp;fm=173&amp;s=E6D35A90C534682248600D4C030050F3&amp;w=638&amp;h=135&amp;img.PNG" alt="此处输入图片的描述"></p>
+<p>如上图所示，HTTP请求过程中，客户端与服务器之间没有任何身份确认的过程，数据全部明文传输，“裸奔”在互联网上，所以很容易遭到黑客的攻击，如下：<br><img src="https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=3056907754,3594317907&amp;fm=173&amp;s=14B965329E00CE01224520C90100A0F1&amp;w=489&amp;h=184&amp;img.JPG" alt="此处输入图片的描述"></p>
+<p>可以看到，客户端发出的请求很容易被黑客截获，如果此时黑客冒充服务器，则其可返回任意信息给客户端，而不被客户端察觉，所以我们经常会听到一词“劫持”，现象如下：<br><img src="https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2571857014,1313083240&amp;fm=173&amp;s=C8186E968602911990B1246903000063&amp;w=621&amp;h=241&amp;img.JPG" alt="此处输入图片的描述"></p>
+<p>下面两图中，浏览器中填入的是相同的URL，左边是正确响应，而右边则是被劫持后的响应</p>
+<p>所以 HTTP 传输面临的风险有：</p>
+<p>（1） 窃听风险：黑客可以获知通信内容。</p>
+<p>（2） 篡改风险：黑客可以修改通信内容。</p>
+<p>（3） 冒充风险：黑客可以冒充他人身份参与通信。</p>
+<p>二、HTTP 向 HTTPS 演化的过程</p>
+<p>第一步：为了防止上述现象的发生，人们想到一个办法：对传输的信息加密（即使黑客截获，也无法破解）</p>
+<p><img src="https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=1310717757,3915195483&amp;fm=173&amp;s=10B9E13217B05429547440DA0300C0F2&amp;w=450&amp;h=212&amp;img.JPG" alt="此处输入图片的描述"></p>
+<p>如上图所示，此种方式属于对称加密，双方拥有相同的密钥，信息得到安全传输，但此种方式的缺点是：</p>
+<p>（1）不同的客户端、服务器数量庞大，所以双方都需要维护大量的密钥，维护成本很高</p>
+<p>（2）因每个客户端、服务器的安全级别不同，密钥极易泄露</p>
+<p>第二步：既然使用对称加密时，密钥维护这么繁琐，那我们就用非对称加密试试<br><img src="https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=1178197868,2257273396&amp;fm=173&amp;s=40B8A572071A54695AD160DB020080F1&amp;w=475&amp;h=238&amp;img.JPG" alt="此处输入图片的描述"></p>
+<p>如上图所示，客户端用公钥对请求内容加密，服务器使用私钥对内容解密，反之亦然，但上述过程也存在缺点：</p>
+<p>（1）公钥是公开的（也就是黑客也会有公钥），所以第 ④ 步私钥加密的信息，如果被黑客截获，其可以使用公钥进行解密，获取其中的内容</p>
+<p>第三步：非对称加密既然也有缺陷，那我们就将对称加密，非对称加密两者结合起来，取其精华、去其糟粕，发挥两者的各自的优势<br><img src="https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=1326741493,2606501418&amp;fm=173&amp;s=50B925722B1A50495AF5C4CA000030B3&amp;w=558&amp;h=352&amp;img.JPG" alt="此处输入图片的描述"></p>
+<p>如上图所示</p>
+<p>（1）第 ③ 步时，客户端说：（咱们后续回话采用对称加密吧，这是对称加密的算法和对称密钥）这段话用公钥进行加密，然后传给服务器</p>
+<p>（2）服务器收到信息后，用私钥解密，提取出对称加密算法和对称密钥后，服务器说：（好的）对称密钥加密</p>
+<p>（3）后续两者之间信息的传输就可以使用对称加密的方式了</p>
+<p>遇到的问题：</p>
+<p>（1）客户端如何获得公钥</p>
+<p>（2）如何确认服务器是真实的而不是黑客</p>
+<p>第四步：获取公钥与确认服务器身份<br><img src="https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2238262966,367688593&amp;fm=173&amp;s=04B845328D50DC03545549DA030050B2&amp;w=640&amp;h=226&amp;img.PNG" alt="此处输入图片的描述"></p>
+<p>1、获取公钥</p>
+<p>（1）提供一个下载公钥的地址，回话前让客户端去下载。（缺点：下载地址有可能是假的；客户端每次在回话前都先去下载公钥也很麻烦）</p>
+<p>（2）回话开始时，服务器把公钥发给客户端（缺点：黑客冒充服务器，发送给客户端假的公钥）</p>
+<p>2、那有木有一种方式既可以安全的获取公钥，又能防止黑客冒充呢？ 那就需要用到终极武器了：SSL 证书（申购）<br><img src="https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3822097194,4067511771&amp;fm=173&amp;s=40B925720F0A544D0E75C8CE0000F0B3&amp;w=567&amp;h=362&amp;img.JPG" alt="此处输入图片的描述"></p>
+<p>如上图所示，在第 ② 步时服务器发送了一个SSL证书给客户端，SSL 证书中包含的具体内容有：</p>
+<p>（1）证书的发布机构CA</p>
+<p>（2）证书的有效期</p>
+<p>（3）公钥</p>
+<p>（4）证书所有者</p>
+<p>（5）签名</p>
+<p>………</p>
+<p>3、客户端在接受到服务端发来的SSL证书时，会对证书的真伪进行校验，以浏览器为例说明如下：</p>
+<p>（1）首先浏览器读取证书中的证书所有者、有效期等信息进行一一校验</p>
+<p>（2）浏览器开始查找操作系统中已内置的受信任的证书发布机构CA，与服务器发来的证书中的颁发者CA比对，用于校验证书是否为合法机构颁发</p>
+<p>（3）如果找不到，浏览器就会报错，说明服务器发来的证书是不可信任的。</p>
+<p>（4）如果找到，那么浏览器就会从操作系统中取出 颁发者CA 的公钥，然后对服务器发来的证书里面的签名进行解密</p>
+<p>（5）浏览器使用相同的hash算法计算出服务器发来的证书的hash值，将这个计算的hash值与证书中签名做对比</p>
+<p>（6）对比结果一致，则证明服务器发来的证书合法，没有被冒充</p>
+<p>（7）此时浏览器就可以读取证书中的公钥，用于后续加密了</p>
+<p>4、所以通过发送SSL证书的形式，既解决了公钥获取问题，又解决了黑客冒充问题，一箭双雕，HTTPS加密过程也就此形成</p>
+<p>所以相比HTTP，HTTPS 传输更加安全</p>
+<p>（1） 所有信息都是加密传播，黑客无法窃听。</p>
+<p>（2） 具有校验机制，一旦被篡改，通信双方会立刻发现。</p>
+<p>（3） 配备身份证书，防止身份被冒充。</p>
+<p>总结</p>
+<p>综上所述，相比 HTTP 协议，HTTPS 协议增加了很多握手、加密解密等流程，虽然过程很复杂，但其可以保证数据传输的安全。所以在这个互联网膨胀的时代，其中隐藏着各种看不见的危机，为了保证数据的安全，维护网络稳定，建议大家多多推广HTTPS。</p>
+<p>HTTPS 缺点：</p>
+<p>（1）SSL 证书费用很高，以及其在服务器上的部署、更新维护非常繁琐</p>
+<p>（2）HTTPS 降低用户访问速度（多次握手）</p>
+<p>（3）网站改用HTTPS 以后，由HTTP 跳转到 HTTPS 的方式增加了用户访问耗时（多数网站采用302跳转）</p>
+<p>（4）HTTPS 涉及到的安全算法会消耗 CPU 资源，需要增加大量机器（https访问过程需要加解密）</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/29/linux-test/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -760,7 +971,7 @@ return 0;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -790,9 +1001,9 @@ return 0;
                   </span>
                 
                   <span class="links-of-author-item">
-                    <a href="https://plus.google.com/yourname" target="_blank" title="Google">
+                    <a href="https://blog.csdn.net/grace_fang" target="_blank" title="CSDN">
                       
-                        <i class="fa fa-fw fa-google"></i>Google</a>
+                        <i class="fa fa-fw fa-google"></i>CSDN</a>
                   </span>
                 
                   <span class="links-of-author-item">
